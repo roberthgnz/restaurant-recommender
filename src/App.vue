@@ -78,18 +78,7 @@ const handleRemove = (place) => {
   }
 };
 
-onMounted(() => {
-  inject() // Inject analytics
-
-  // Inject Google Maps API
-  const KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
-  const url = `https://maps.googleapis.com/maps/api/js?key=${KEY}&callback=initMap&libraries=places&v=weekly`
-  const script = document.createElement('script')
-  script.setAttribute('src', url)
-  script.setAttribute('defer', '')
-  // Add script to the end of the page
-  document.body.appendChild(script)
-})
+onMounted(inject)
 </script>
 
 <template>
