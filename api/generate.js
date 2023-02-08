@@ -5,7 +5,9 @@ function getLastNElements(array, n) {
 }
 
 async function getRestaurantReviews(place) {
-  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.place_id}&key=${process.env.VITE_GOOGLE_MAPS_API_KEY}`;
+  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${
+    place.place_id
+  }&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}`;
 
   const response = await fetch(url, {
     method: "GET",
