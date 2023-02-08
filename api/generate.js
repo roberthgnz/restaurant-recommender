@@ -1,5 +1,9 @@
 import { OpenAIStream } from "../utils/OpenAIStream";
 
+function getLastNElements(array, n) {
+  return array.slice(-n);
+}
+
 async function getRestaurantReviews(place) {
   const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.place_id}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
 
@@ -28,7 +32,9 @@ const handler = async (req) => {
   const { context, places } = await req.json();
 
   const values = await Promise.all(
-    places.map(async (place) => await getRestaurantReviews(place))
+    getLastNElements(places, 5).map(
+      async (place) => await getRestaurantReviews(place)
+    )
   );
 
   const prompt =
