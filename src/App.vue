@@ -112,13 +112,18 @@ onMounted(inject)
           <div class="flex flex-col justify-center">
             <Place v-for="place in places" :key="place.place_id" :place_id="place.place_id" :name="place.name"
               :address="place.formatted_address" @removePlace="handleRemove" />
-            <button @click="getCompletion" type="button" :disabled="isLoading"
-              class="bg-black rounded-xl text-white font-medium px-4 py-2 sm:mt-4 mt-2 hover:bg-black/80 w-full">
-              {{ isLoading? 'Loading...': 'Generate recommendation' }}</button>
           </div>
+          <div class="flex items-center my-4">
+            <span
+              class="w-8 h-8 rounded-full font-medium bg-black text-white inline-flex items-center justify-center mr-2">3</span>
+            <p class="text-left font-medium">Give some context.</p>
+          </div>
+          <textarea rows="4" class="w-full rounded-md shadow focus:border-black focus:ring-black p-4"
+            placeholder="e.g. I'm looking for a place to eat seafood with my family." v-model="context"></textarea>
+          <button @click="getCompletion" type="button" :disabled="isLoading"
+            class="bg-black rounded-xl text-white font-medium px-4 py-2 sm:mt-4 mt-2 hover:bg-black/80 w-full">
+            {{ isLoading? 'Loading...': 'Generate recommendation' }}</button>
           <template v-if="result">
-            <textarea rows="4" class="w-full rounded-md shadow focus:border-black focus:ring-black my-5 p-4"
-              placeholder="e.g. I'm looking for a place to eat seafood with my family." v-model="context"></textarea>
             <div class="mt-8">
               <h2 class="text-3xl font-bold text-slate-900 mx-auto">Your generated recommendation</h2>
               <Recommendations :value="result" />
