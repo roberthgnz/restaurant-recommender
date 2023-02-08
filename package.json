@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@vercel/analytics": "^0.1.8",
     "eventsource-parser": "^0.1.0",
     "node-html-parser": "^6.1.4",
     "vue": "^3.2.47"

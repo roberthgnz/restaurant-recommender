@@ -1,6 +1,7 @@
 lockfileVersion: 5.4
 
 specifiers:
+  '@vercel/analytics': ^0.1.8
   '@vitejs/plugin-vue': ^4.0.0
   autoprefixer: ^10.4.13
   dotenv: ^16.0.3
@@ -12,6 +13,7 @@ specifiers:
   vue: ^3.2.47
 
 dependencies:
+  '@vercel/analytics': 0.1.8
   eventsource-parser: 0.1.0
   node-html-parser: 6.1.4
   vue: 3.2.47
@@ -267,6 +269,12 @@ packages:
       '@nodelib/fs.scandir': 2.1.5
       fastq: 1.15.0
     dev: true
+
+  /@vercel/analytics/0.1.8:
+    resolution: {integrity: sha512-PQrOI8BJ9qUiVJuQfnKiJd15eDjDJH9TBKsNeMrtelT4NAk7d9mBVz1CoZkvoFnHQ0OW7Xnqmr1F2nScfAnznQ==}
+    peerDependencies:
+      react: ^16.8||^17||^18
+    dev: false
 
   /@vitejs/plugin-vue/4.0.0_vite@4.1.1+vue@3.2.47:
     resolution: {integrity: sha512-e0X4jErIxAB5oLtDqbHvHpJe/uWNkdpYV83AOG2xo2tEVSzCzewgJMtREZM30wXnM5ls90hxiOtAuVU6H5JgbA==}

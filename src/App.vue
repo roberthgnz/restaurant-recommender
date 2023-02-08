@@ -1,5 +1,6 @@
 <script setup>
-import { ref } from "vue";
+import { inject } from '@vercel/analytics'
+import { onMounted, ref } from "vue";
 
 import Icon from './assets/icon.svg'
 
@@ -76,6 +77,19 @@ const handleRemove = (place) => {
     places.value = places.value.filter((p) => p.place_id !== place.place_id);
   }
 };
+
+onMounted(() => {
+  inject() // Inject analytics
+
+  // Inject Google Maps API
+  const KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY
+  const url = `https://maps.googleapis.com/maps/api/js?key=${KEY}&callback=initMap&libraries=places&v=weekly`
+  const script = document.createElement('script')
+  script.setAttribute('src', url)
+  script.setAttribute('defer', '')
+  // Add script to the end of the page
+  document.body.appendChild(script)
+})
 </script>
 
 <template>
