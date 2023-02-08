@@ -1,7 +1,7 @@
 import { OpenAIStream } from "../utils/OpenAIStream";
 
-async function getRestaurantReviews() {
-  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=ChIJOzLmMImipBIRqApr2CgqrBQ&key=${process.env.GOOGLE_MAPS_API_KEY}`;
+async function getRestaurantReviews(place) {
+  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.place_id}&key=${process.env.GOOGLE_MAPS_API_KEY}`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -9,29 +9,31 @@ async function getRestaurantReviews() {
 
   const data = await response.json();
 
-  return data.result.reviews
-    .map((review, index) => {
-      const text = review.text
-        .replace(/(\r\n|\n|\r)/gm, " ")
-        .replace(/[^a-zA-Z0-9 ]/g, "")
-        .replace(/\s+/g, " ")
-        .trim();
-
-      return `Review ${index + 1}: ${text}`;
-    })
-    .join("\n");
+  return (
+    `Restaurant: ${place.name}\n\n` +
+    data.result.reviews
+      .map((review, index) => {
+        const text = review.text.trim();
+        return `Review ${index + 1}: ${text}`;
+      })
+      .join("\n")
+  );
 }
 
 export const config = {
   runtime: "edge",
 };
 
-const handler = async () => {
-  const reviews = await getRestaurantReviews();
+const handler = async (req) => {
+  const { context, places } = await req.json();
+
+  const values = await Promise.all(
+    places.map(async (place) => await getRestaurantReviews(place))
+  );
 
   const prompt =
-    "Based on this restaurant's reviews, do you think it is a good restaurant?\n\n" +
-    reviews;
+    `Generate a recommendation, base it on this context: ${context} and the following reviews:\n\n` +
+    values.join("\n\n");
 
   const payload = {
     model: "text-davinci-003",
