@@ -20,4 +20,4 @@ vercel dev
 
 Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=vercel-examples):
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/HolaSoyGonZzA/restaurant-recommende&env=OPENAI_API_KEY&env=GOOGLE_MAPS_API_KEY&project-name=twitter-bio-generator&repo-name=restaurant-recommende)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/HolaSoyGonZzA/restaurant-recommender&env=OPENAI_API_KEY&env=GOOGLE_MAPS_API_KEY&project-name=restaurant-recommender&repo-name=restaurant-recommender)
