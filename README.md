@@ -1,8 +1,8 @@
-# [Restaurant Recommender](https://restaurant-recommender-steel.vercel.app)
+# [Restaurant Recommender](https://www.restaurant-recommender.com)
 
 This project generates restaurant recommendations based on your preferences. It uses the [OpenAI GPT-3 API](https://openai.com/api/) (specifically, text-davinci-003) and [Vercel Edge functions](https://vercel.com/features/edge-functions) with streaming. It constructs a prompt based on the form and user input, sends it to the GPT-3 API via a Vercel Edge function, then streams the response back to the application.
 
-[![Restaurant Recommender](./public/screenshot.png)](https://restaurant-recommender-steel.vercel.app)
+[![Restaurant Recommender](./public/screenshot.png)](https://www.restaurant-recommender.com)
 
 ## Running Locally
 
