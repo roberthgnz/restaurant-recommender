@@ -1,3 +1,5 @@
+import { OpenAIStream } from "../utils/OpenAIStream";
+
 function getLastNElements(array, n) {
   return array.slice(-n);
 }
@@ -22,8 +24,12 @@ async function getRestaurantReviews(place) {
   );
 }
 
-const handler = async (req, res) => {
-  const { context, places } = req.body;
+export const config = {
+  runtime: "edge",
+};
+
+const handler = async (req) => {
+  const { context, places } = await req.json();
 
   const values = await Promise.all(
     getLastNElements(places, 5).map(
@@ -31,28 +37,25 @@ const handler = async (req, res) => {
     )
   );
 
-  const content =
-    `Give me a recommendation, base it on this context: ${context} and the following reviews:\n\n` +
+  const prompt =
+    `Generate a recommendation, base it on this context: ${context} and the following reviews:\n\n` +
     values.join("\n\n");
 
   const payload = {
-    model: "gpt-3.5-turbo",
+    model: "text-davinci-003",
+    prompt,
+    temperature: 0.7,
+    top_p: 1,
+    frequency_penalty: 0,
+    presence_penalty: 0,
     max_tokens: 200,
-    messages: [{ role: "user", content }],
+    stream: true,
+    n: 1,
   };
 
-  const response = await fetch("https://api.openai.com/v1/chat/completions", {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
-    },
-    method: "POST",
-    body: JSON.stringify(payload),
-  });
+  const stream = await OpenAIStream(payload);
 
-  const data = await response.json();
-
-  return res.status(200).json(data.choices[0]);
+  return new Response(stream);
 };
 
 export default handler;
