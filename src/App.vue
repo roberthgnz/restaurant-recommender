@@ -1,6 +1,8 @@
 <script setup>
 import { inject } from '@vercel/analytics'
 import { onMounted, ref } from "vue";
+import { toast } from 'vue3-toastify';
+import 'vue3-toastify/dist/index.css';
 
 import Icon from './assets/icon.svg'
 
@@ -26,45 +28,59 @@ const moveScroll = () => {
 };
 
 const getCompletion = async () => {
-  isLoading.value = true;
+  let timer;
 
-  result.value = "";
+  try {
+    isLoading.value = true;
 
-  const response = await fetch("/api/generate", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      context: context.value || defaultContext,
-      places: places.value,
-    }),
-  });
+    result.value = "";
 
-  if (!response.ok) {
-    throw new Error(response.statusText);
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    timer = setTimeout(() => {
+      controller.abort()
+    }, 50000)
+
+    const response = await fetch("/api/generate", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        context: context.value || defaultContext,
+        places: places.value,
+      }),
+      signal,
+    });
+
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+
+    const data = await response.json();
+
+    if (!data) {
+      return;
+    }
+
+    result.value = data[0].text
+
+    moveScroll();
+  } catch (error) {
+    if (error.name === 'AbortError') {
+      toast.error('Request timed out', {
+        autoClose: 3000,
+      });
+    } else {
+      toast.error(error.message, {
+        autoClose: 3000,
+      });
+    }
+  } finally {
+    clearTimeout(timer)
+    isLoading.value = false;
   }
-
-  const data = response.body;
-  if (!data) {
-    return;
-  }
-
-  const reader = data.getReader();
-  const decoder = new TextDecoder();
-
-  let done = false;
-
-  while (!done) {
-    const { value, done: doneReading } = await reader.read();
-    done = doneReading;
-    const chunkValue = decoder.decode(value);
-    result.value += chunkValue;
-  }
-
-  isLoading.value = false;
-
-  moveScroll();
 };
 
 const handleAdd = (place) => {
@@ -122,7 +138,7 @@ onMounted(inject)
             placeholder="e.g. I'm looking for a place to eat seafood with my family." v-model="context"></textarea>
           <button @click="getCompletion" type="button" :disabled="isLoading"
             class="bg-black rounded-xl text-white font-medium px-4 py-2 sm:mt-4 mt-2 hover:bg-black/80 w-full">
-            {{ isLoading? 'Loading...': 'Generate recommendation' }}</button>
+            {{ isLoading ? 'Loading...' : 'Generate recommendation' }}</button>
           <template v-if="result">
             <div class="mt-8">
               <h2 class="text-3xl font-bold text-slate-900 mx-auto">Your generated recommendation</h2>
