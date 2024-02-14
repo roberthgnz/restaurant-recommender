@@ -10,9 +10,12 @@
   },
   "dependencies": {
     "@vercel/analytics": "^1.1.3",
-    "eventsource-parser": "^1.1.2",
+    "ai": "^2.2.35",
     "node-html-parser": "^6.1.12",
-    "vue": "^3.4.19"
+    "openai": "^4.28.0",
+    "openai-edge": "^1.2.2",
+    "vue": "^3.4.19",
+    "vue3-toastify": "^0.2.1"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.4",
