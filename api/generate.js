@@ -1,11 +1,19 @@
-import { OpenAIStream } from "../utils/OpenAIStream";
+import OpenAI from 'openai';
+import { Configuration, OpenAIApi } from "openai-edge"
+import { OpenAIStream, StreamingTextResponse } from "ai"
+
+const apiConfig = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY,
+})
+
+const openai = new OpenAIApi(apiConfig)
 
 function getLastNElements(array, n) {
   return array.slice(-n);
 }
 
 async function getRestaurantReviews(place) {
-  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.place_id}&key=${process.env.VITE_GOOGLE_MAPS_API_KEY}`;
+  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${place.place_id}&key=${process.env.VITE_GOOGLE_PLACES_API_KEY}`;
 
   const response = await fetch(url, {
     method: "GET",
@@ -41,21 +49,23 @@ const handler = async (req) => {
     `Generate a recommendation, base it on this context: ${context} and the following reviews:\n\n` +
     values.join("\n\n");
 
-  const payload = {
-    model: "text-davinci-003",
+  const completion = await openai.createCompletion({
     prompt,
-    temperature: 0.7,
-    top_p: 1,
-    frequency_penalty: 0,
-    presence_penalty: 0,
-    max_tokens: 200,
-    stream: true,
-    n: 1,
-  };
+    model: "gpt-3.5-turbo-instruct",
+    max_tokens: 300,
+    temperature: 0.0,
+    frequency_penalty: 1,
+    presence_penalty: 1,
+  })
 
-  const stream = await OpenAIStream(payload);
+  const data = (await completion.json())
 
-  return new Response(stream);
+  return new Response(JSON.stringify(data.choices), {
+    status: 200,
+    headers: {
+      "content-type": "application/json",
+    },
+  })
 };
 
 export default handler;
