@@ -53,10 +53,9 @@ const handler = async (req) => {
     prompt,
     model: "gpt-3.5-turbo-instruct",
     max_tokens: 300,
-    temperature: 0.7,
-    top_p: 1,
-    frequency_penalty: 0,
-    presence_penalty: 0,
+    temperature: 0.0,
+    frequency_penalty: 1,
+    presence_penalty: 1,
   })
 
   const data = (await completion.json())
