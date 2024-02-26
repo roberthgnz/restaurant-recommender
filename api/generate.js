@@ -46,7 +46,7 @@ const handler = async (req) => {
   if(!values) return new Response("No reviews found", { status: 404 })
 
   const prompt =
-    `Generate a recommendation, base it on this context: ${context} and the following reviews:\n\n` +
+    `Generate a recommendation, base it on this context: ${context} and the following reviews, Your task is to analyze the reviews of these restaurants to provide personalized recommendations. Consider factors such as overall sentiment, specific mentions of food quality, service, ambiance, and price, as well as any unique preferences or dietary restrictions expressed by the user. Tailor your recommendations to suit the user's tastes while highlighting the strengths and weaknesses of each restaurant based on the review analysis:\n\n` +
     values.join("\n\n");
 
   const completion = await openai.createCompletion({
