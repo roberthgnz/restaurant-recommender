@@ -21,9 +21,11 @@ async function getRestaurantReviews(place) {
 
   const data = await response.json();
 
+  if (data.result?.reviews) return null
+
   return (
     `Restaurant: ${place.name}\n\n` +
-    data.result?.reviews
+    data.result.reviews
       .map((review, index) => {
         const text = review.text.trim();
         return `Review ${index + 1}: ${text}`;
@@ -40,10 +42,10 @@ const handler = async (req) => {
   const { context, places } = await req.json();
 
   const values = await Promise.all(
-    getLastNElements(places, 5).map(
-      async (place) => await getRestaurantReviews(place)
-    )
+    getLastNElements(places, 5).map(getRestaurantReviews)
   );
+
+  if(!values) return new Response("No reviews found", { status: 404 })
 
   const prompt =
     `Generate a recommendation, base it on this context: ${context} and the following reviews:\n\n` +
