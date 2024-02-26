@@ -23,7 +23,7 @@ async function getRestaurantReviews(place) {
 
   return (
     `Restaurant: ${place.name}\n\n` +
-    data.result.reviews
+    data.result?.reviews
       .map((review, index) => {
         const text = review.text.trim();
         return `Review ${index + 1}: ${text}`;
